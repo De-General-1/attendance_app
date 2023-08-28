@@ -1,0 +1,318 @@
+{% extends 'main.html' %}
+{% load static %}
+
+{% block title %}Dashboard{% endblock title %}
+
+{% block css_files %}
+    <link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+{% endblock css_files %}
+
+{% block scripts %}
+    <script src="../path/to/flowbite/dist/flowbite.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.8.1/flowbite.min.js"></script>
+
+    <script>
+        const ctx = document.getElementById('myChart');
+
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: [{% for att in weeks_attendances %}'{{att.0.get_short_form_date}}',{% endfor %}],
+                datasets: [{
+                    label: '# of hours worked',
+                    data: [{% for att in weeks_attendances %}{{att.1}},{% endfor %}],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            },
+
+        });
+    </script>
+{% endblock scripts %}
+
+{% block content %}
+    {% if request.user.is_staff %}
+        <div class="ml-auto overflow-x-scroll w-[85%] p-10">
+
+            <div class=" sm:flex justify-between ">
+                <p class="text-xl"><span class="font-bold">Today</span>-{{today}}<i class='bx bxs-calendar-alt mx-2 text-gray-400' ></i></p>
+                <div class="flex justify-end sm:justify-normal space-x-2 my-5 sm:my-0 ">
+                    <a href="#">
+                        <i class='relative bx bx-bell text-3xl cursor-pointer'>
+                            <span class="absolute right-0 -top-2 bg-red-600 rounded-[100%] text-center w-5 h-5 text-white text-xs font-semibold">5</span>
+                        </i>
+                    </a>
+                    <p class="relative">{% if request.user.profile.first_name %}
+                            {{request.user.profile.first_name}} {{request.user.profile.last_name}}
+                        {% else %}
+                            {{request.user.username}}
+                        {% endif %}<span class="absolute top-[30%] right-0 text-sm text-blue-400">Supervisor</span></p>
+                    <img class="h-20 w-20 object-cover rounded-lg" src="{{request.user.profile.profile_pic.url}}">
+                </div>
+            </div>
+
+            <div class="md:flex w-full my-2">
+                <div class="w-[100%] sm:w-[50%] md:w-[30%] bg-[#03256C] p-2 rounded-md text-white">
+                    <div class="flex">
+                        <img src="{% static 'images/users-icon.png' %}">
+                        <div class="mx-1"><p>Employee Count</p>
+                            <p class="flex">{{workers_count}}</p>
+                        </div>
+                    </div>
+                    
+                </div>
+                <div class="sm:grid grid-cols-3 gap-5 w-full my-5 md:my-0 md:mx-16">
+                    <div class="flex justify-between sm:my-0 my-5 border p-2 rounded-md border-gray-300">
+                        <div>
+                            <h2 class="text-blue-500">Present</h2>
+                            <h2 class="font-bold">{{present}}</h2>
+                        </div>
+                        <div>
+                            <i class="bx bxs-check-circle text-blue-500 text-3xl"></i>
+                        </div>
+                    </div>
+                    <div class="flex justify-between border sm:my-0 my-5 p-2 rounded-md border-gray-300">
+                        <div>
+                            <h2 class="text-orange-500">On leave</h2>
+                            <h2 class="font-bold">{{leaves_count}}</h2>
+                        </div>
+                        <div>
+                            <i class="bx bxs-time-five text-orange-500 text-3xl"></i>
+                        </div>
+                    </div>
+                    <div class="flex justify-between border p-2 sm:my-0 my-5 rounded-md border-gray-300">
+                        <div>
+                            <h2 class="text-red-500">Absent</h2>
+                            <h2 class="font-bold">{{absent}}</h2>
+                        </div>
+                        <div>
+                            <i class="bx bxs-x-circle text-red-600 text-3xl"></i>
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+
+            <div class="flex my-[4%] w-[50rem] md:w-[65rem] overflow-x-scroll">
+                <div class="w-[40%] md:w-[25%]">
+                    <div class="border border-gray-200 rounded-md p-4">
+                        <h1 class="text-center">Average Attendance</h1>
+                        <div class="my-8" role="progressbar" aria-valuenow="46" aria-valuemin="0" aria-valuemax="100" style="--value: {{avg_week_attendance}}"></div>
+                        <p class="text-center text-gray-400">Last 7 days</p>
+                    </div>
+                    
+                    <div class=" mt-[20%] border border-gray-200 rounded-md p-4">
+                        <h1>Highest Attendance</h1>
+                        <div class="flex justify-between text-sm my-3">
+                            <h1 class="font-bold text-gray-800">Employee name</h1>
+                            <h1 class="font-bold text-gray-800">Attendance %</h1>
+                        </div>
+                        <div>
+                            {% for attendance in highest_attendance %}
+                                <div class="flex justify-between my-3">
+                                    <p class="flex relative">{{forloop.counter}}.<span class=""><img class="w-8 h-8 mx-1 object-cover rounded-[100%]" src="{{attendance.0.profile.profile_pic.url}}"></span>{% if attendance.0.profile.first_name %}{{attendance.0.profile.first_name}}{% else %}{{attendance.0.username}}{% endif %}
+                                    </p>
+                                    <p class="font-bold">{{attendance.1}}%<i class='bx bx-loader-alt text-green-600 mt-2' ></i></p>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+                <div class="w-[75%]">
+                    <div class="attendance-box mx-5">
+                        <h1 class="mx-10 text-2xl font-bold">Attendance List</h1>
+                        <div class="mx-10 grid grid-cols-8 border border-gray-300 p-2 text-gray-500">
+                            <p>Emp ID</p>
+                            <div class="col-span-2">Emp Name</div>
+                            <p>Status</p>
+                            <p>Clock In</p>
+                            <p>Clock out</p>
+                            <p>Department</p>
+                            <p>Details</p>
+                        </div>
+                        <ul>
+                            {% for attendance in worker_attendances %}
+                                {% if attendance.1 %}
+                                    <li class="mx-10 grid grid-cols-8 p-2 text-sm">
+                                        <p>{{attendance.0.id}}</p>
+                                        <p class="col-span-2 ml-2 relative"><span class="absolute -left-9 -bottom-[5px]"><img class="w-8 h-8 object-cover rounded-[100%]" src="{{attendance.0.profile.profile_pic.url}}"></span>{% if attendance.0.profile.first_name %}{{attendance.0.profile.first_name}} {{attendance.0.profile.last_name}}{% else %}{{attendance.0.username}}{% endif %}</p>
+                                        <p class=""><span><i class='bx bxs-circle text-xs text-green-600'></i></span>Present</p>
+                                        <p>{{attendance.1.0.get_formated_checkin_time}}</p>
+                                        <p>{{attendance.1.get_formated_checkout_time}}</p>
+                                        <p>{% if attendance.0.profile.position %}{{attendance.0.profile.position|truncatewords:1}}{% else %}N/A{% endif %}</p>
+                                        <a href="{% url 'employee_details' attendance.0.id %}" class="text-center cursor-pointer w-[70%] hover:bg-blue-600 hover:text-white rounded  border border-blue-600 text-blue-500">view</a>
+                                    </li>
+                                {% else %}
+                                    <li class="mx-10 grid grid-cols-8 p-2 text-sm">
+                                        <p>{{attendance.0.id}}</p>
+                                        <p class="col-span-2 ml-2 relative"><span class="absolute -left-9 -bottom-[5px]"><img class="w-8 h-8 object-cover rounded-[100%]" src="{{attendance.0.profile.profile_pic.url}}"></span>{% if attendance.0.profile.first_name %}{{attendance.0.profile.first_name}} {{attendance.0.profile.last_name}}{% else %}{{attendance.0.username}}{% endif %}</p>
+                                        <p><span><i class='bx bxs-circle text-xs text-red-600'></i></span>Absent</p>
+                                        <p>--</p>
+                                        <p>--</p>
+                                        <p>--</p>
+                                        <a href="{% url 'employee_details' attendance.0.id %}" class="text-center cursor-pointer w-[70%] hover:bg-blue-600 hover:text-white rounded  border border-blue-600 text-blue-500">view</a>
+                                    </li>
+                                {% endif %}
+                            {% endfor %}
+                        </ul>
+                        
+                    </div>
+                </div>
+                
+            </div>
+
+        </div>
+    {% else %}
+        <div class="ml-auto w-[85%] p-2 sm:p-5 md:p-10">
+            <div class=" sm:flex justify-between ">
+                <p class="text-xl"><span class="font-bold">Today</span>-{{today}}<i
+                        class='bx bxs-calendar-alt mx-2 text-gray-400'></i></p>
+                <div class="flex justify-end sm:justify-normal space-x-2 my-5 sm:my-0 ">
+                    <a href="#">
+                        <i class='relative bx bx-bell text-3xl cursor-pointer'>
+                            <span
+                                class="absolute right-0 -top-2 bg-red-600 rounded-[100%] text-center w-5 h-5 text-white text-xs font-semibold">5</span>
+                        </i>
+                    </a>
+                    <p class="relative">Joseph Stannis<span
+                            class="absolute top-[30%] right-0 text-sm text-blue-400">Supervisor</span></p>
+                    <img src="{% static 'images/profile-1.png' %}">
+                </div>
+            </div>
+
+            <div class="sm:flex">
+                <div class="w-[80%] sm:w-[50%] flex">
+                    <img src="{{request.user.profile.profile_pic.url}}" class="w-auto h-28">
+                    <div class="mx-2 flex flex-col">
+                        <p>{{request.user.username}}</p>
+                        <p class="text-sm text-blue-400">{{request.user.profile.position}}</p>
+                        <p class="text-sm mt-auto">Location: <span class="font-bold">{% if request.user.profile.location %}{{request.user.profile.location}}{% else %}Not known{% endif %}</span></p>
+                    </div>
+
+                </div>
+                <div class="md:flex mt-auto">
+                    {% if attended_today %}
+                        <div class="mx-3 md:mx-5 mt-5 md:mt-0">
+                            <button class="p-2 border-2 text-green-600 border-green-600">Clock in({{attendance_today.0.get_formated_checkin_time}})</button>
+                        </div>
+                        <div class="mx-3 md:mx-5 mt-5 md:mt-0">
+                            <button class="p-2 border-2 text-red-700 border-red-700">Clock out({{attendance_today.0.get_formated_checkout_time}})</button>
+                        </div>
+                    {% else %}
+                        <div class="mx-3 md:mx-5 mt-5 md:mt-0">
+                            <button class="p-2 border-2 text-green-600 border-green-600">Clock in( ABSENT )</button>
+                        </div>
+                        <div class="mx-3 md:mx-5 mt-5 md:mt-0">
+                            <button class="p-2 border-2 text-red-700 border-red-700">Clock out( ABSENT )</button>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="border border-gray-300 rounded-md w-full sm:w-[98%] md:w-[94%] p-2 my-20">
+                <div class="flex justify-between">
+                    <h1>Weekly Attendance</h1>
+                    <a href="">View Detailed Report</a>
+                </div>
+                <div class="h-auto">
+                    <canvas id="myChart"></canvas>
+                </div>
+            </div>
+
+            <div class="md:flex my-[4%]">
+                <div class="w-[80%] md:w-[60%] border border-gray-200 rounded-md p-4">
+                    <div class="flex justify-between">
+                        <h1 class="font-bold">Time Off</h1>
+                        <a href="{% url 'request_leave' %}" class="bg-blue-700 p-1 text-white rounded-md">Request time
+                            off</a>
+                    </div>
+
+                    <div class="sm:flex justify-between my-5">
+                        <div class="w-[90%] sm:w-[40%] p-2 border border-gray-200 rounded-md">
+                            <p>Vacation leave</p>
+                            {% if user_active_vacation %}
+                                <div class="w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700">
+                                    <div class="bg-blue-600 h-2.5 rounded-full" style="width: {{user_active_vacation.get_used_percentage}}%"></div>
+                                </div>
+                                <div class="flex justify-between text-sm font-semibold">
+                                    <p><span class="text-blue-600">{{user_active_vacation.get_used_days}} days</span> used</p>
+                                    <p><span class="text-blue-600">{{user_active_vacation.get_remaining_days}} days</span> left</p>
+                                </div>
+                            {% else %}
+                                <div class="w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700">
+                                    <div class="bg-blue-600 h-2.5 rounded-full" style="width: 0%"></div>
+                                </div>
+                                <div class="flex justify-between text-sm font-semibold">
+                                    <p><span class="text-blue-600">No active vacation</span></p>
+                                </div>
+                            {% endif %}
+                            
+                        </div>
+                        <div class="w-[90%] sm:w-[40%] mt-5 sm:mt-0 p-2 border border-gray-200 rounded-md">
+                            {% if user_active_sick_leave %}
+                                <p>Sick leave</p>
+                                <div class="w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700">
+                                    <div class="bg-blue-600 h-2.5 rounded-full" style="width: {{user_active_sick_leave.get_used_percentage}}%"></div>
+                                </div>
+                                <div class="flex justify-between text-sm font-semibold">
+                                    <p><span class="text-blue-600">{{user_active_sick_leave.get_used_days}} days</span> used</p>
+                                    <p><span class="text-blue-600">{{user_active_sick_leave.get_remaining_days}} days</span> left</p>
+                                </div>
+                            {% else %}
+                                <p>Sick leave</p>
+                                <div class="w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700">
+                                    <div class="bg-blue-600 h-2.5 rounded-full" style="width: 0%"></div>
+                                </div>
+                                <div class="flex justify-between text-sm font-semibold">
+                                    <p><span class="text-blue-600">No active sick leave</span></p>
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div>
+                        <div class="flex bg-gray-300 p-2 rounded-md">
+                            <h1 class="w-[50%]">Time off date</h1>
+                            <h1 class="w-[25%]">Type</h1>
+                            <h1 class="w-[25%]">Status</h1>
+                        </div>
+                        {% for leave in user_leaves %}
+                            <div class="flex p-2 border-b border-gray-300">
+                                <p class="w-[50%]">{{leave.start_date}} - {{leave.end_date}}</p>
+                                <p class="w-[25%]">{{leave.leave_type}}</p>
+                                {% if leave.status == "Accepted" %}
+                                    <p class="w-[25%] text-green-500">{{leave.status}}</p>
+                                {% elif leave.status == "Declined" %}
+                                    <p class="w-[25%] text-red-500">Declined</p>
+                                {% else %}
+                                    <p class="w-[25%] text-gray-700">In Review</p>
+                                {% endif %}
+                            </div>
+                        {% endfor %}
+                    </div>
+
+                </div>
+                <div class="w-[80%] md:w-[40%] my-8">
+                    <div
+                        class="w-auto sm:w-[85%] md:w-[70%] h-auto md:h-full mx-auto rounded-lg border border-gray-200">
+                        <div class="mx-4"><a class="p-2"><img src="{% static 'images/logo.png' %}"></a></div>
+                        <div class="rounded-md p-4">
+                            <h1 class="text-center font-semibold">Average Attendance</h1>
+                            <div class="my-8" role="progressbar" aria-valuenow="46" aria-valuemin="0"
+                                aria-valuemax="100" style="--value: {{avg_week_attendance}}"></div>
+                            <p class="text-center text-gray-400">Last 7 days</p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    {% endif %}
+{% endblock content %}

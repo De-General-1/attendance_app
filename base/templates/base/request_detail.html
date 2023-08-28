@@ -1,0 +1,132 @@
+{% extends 'main.html' %}
+{% load static %}
+
+{% block title %}Timeout Requests{% endblock title %}
+
+{% block css_files %}
+    <link rel="stylesheet" href="{% static 'css/profile.css' %}">
+{% endblock css_files %}
+
+{% block scripts %}
+    <script src="{% static 'js/script.js' %}"></script>
+{% endblock scripts %}
+
+{% block style %}
+    <style>
+        .attendance-box ul li:nth-child(even) {
+            border: 1px solid rgb(214, 214, 214);
+        }
+    </style>
+{% endblock style %}
+
+{% block content %}
+    <div class="ml-auto w-[95%] sm:w-[85%] p-5">
+        {% include 'nav.html' %}
+
+        <div class="mt-[2%] mx-[2%] lg:mx-[5%]">
+            <h1 class="text-xl font-semibold ml-[10%] sm:ml-0">Request Detail</h1>
+
+            <div class="w-full md:flex my-5">
+                <div class="ml-[8%] sm:ml-0 w-[100%] md:w-[60%] lg:w-[40%] h-[100vh] overflow-y-auto border-l border-r border-gray-500">
+                    
+                    <div id="kudusmusah"
+                        class="flex items-center mx-auto w-[90%] cursor-pointer bg-[#03256C] shadow-md border border-gray-100 rounded-md p-2 py-4 my-5">
+                        <span class="mx-2"><img src="{{curr_request.user.profile.profile_pic.url}}"
+                                class="rounded-[50%] w-16 h-16"></span>
+                        <div>
+                            <h1 class="text-gray-100 text-lg font-semibold">{% if curr_request.user.profile.first_name %}{{curr_request.user.profile.first_name}} {{curr_request.user.profile.last_name}}{% else %}{{curr_request.user.username}}{% endif %}</h1>
+                            <h1 class="text-gray-200">{{curr_request.user.email}}</h1>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="w-[95%] md:w-[40%] lg:w-[60%] mt-[10%] lg:mt-0 mx-1 ml-[4%] sm-ml-0 sm:mx-5 lg:mx-10">
+                    <h1 class="text-xl font-semibold">Time Off Duration</h1>
+                    <p class="text-sm my-5">Authorize attendace for breaks and holidays</p>
+                    <h1 class="text-xl font-semibold my-5">Type: <span class="">{{curr_request.leave_type}}</span></h1>
+                    <h1 class="text-xl font-semibold my-5">Date:</h1>
+                    <div class="flex items-center space-x-3 mx-4">
+                        <div class="flex items-center border border-gray-300 rounded-md p-2">
+                            {{curr_request.get_formatted_start_date}}<i class='bx bx-calendar-week mx-2 text-2xl'></i>
+                        </div>
+                        <h1>to</h1>
+                        <div class="flex items-center border border-gray-300 rounded-md p-2">
+                            {{curr_request.get_formatted_end_date}}<i class='bx bx-calendar-week mx-2 text-2xl'></i>
+                        </div>
+                    </div>
+                    <h1 class="text-xl font-semibold my-8">Eligibility:</h1>
+                    <div class="lg:flex items-center m-4">
+                        <div
+                            class="w-[95%] sm:w-[80%] lg:w-[40%] p-2 mx-3 my-5 lg:my-0 border border-gray-200 rounded-md mr-10">
+                            <p class="flex items-center my-2 text-gray-600"><i
+                                    class='bx bxs-plane-alt text-lg mx-2'></i>Vacation leave</p>
+                            {% if user_active_vacation %}
+                                <div class="w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700">
+                                    <div class="bg-blue-600 h-2.5 rounded-full" style="width: {{user_active_vacation.get_used_percentage}}%"></div>
+                                </div>
+                                <div class="flex justify-between text-sm font-semibold">
+                                    <p><span class="text-blue-600">{{user_active_vacation.get_used_days}} days</span> used</p>
+                                    <p><span class="text-blue-600">{{user_active_vacation.get_remaining_days}} days</span> left</p>
+                                </div>
+                            {% else %}
+                                <div class="w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700">
+                                    <div class="bg-blue-600 h-2.5 rounded-full" style="width: 0%"></div>
+                                </div>
+                                <div class="flex justify-between text-sm font-semibold">
+                                    <p><span class="text-blue-600">No active vacation</span></p>
+                                </div>
+                            {% endif %}
+
+
+                        </div>
+                        <div
+                            class="w-[95%] sm:w-[80%] lg:w-[40%] p-2 mx-3 my-5 lg:my-0 border border-gray-200 rounded-md">
+                            {% if user_active_sick_leave %}
+                                <p class="flex items-center my-2 text-gray-600"><i class='bx bx-sad text-lg mx-2'></i>Sick leave</p>
+                                <div class="w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700">
+                                    <div class="bg-blue-600 h-2.5 rounded-full" style="width: {{user_active_sick_leave.get_used_percentage}}%"></div>
+                                </div>
+                                <div class="flex justify-between text-sm font-semibold">
+                                    <p><span class="text-blue-600">{{user_active_sick_leave.get_used_days}} days</span> used</p>
+                                    <p><span class="text-blue-600">{{user_active_sick_leave.get_remaining_days}} days</span> left</p>
+                                </div>
+                            {% else %}
+                                <p class="flex items-center my-2 text-gray-600"><i class='bx bx-sad text-lg mx-2'></i>Sick leave</p>
+                                <div class="w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700">
+                                    <div class="bg-blue-600 h-2.5 rounded-full" style="width: 0%"></div>
+                                </div>
+                                <div class="flex justify-between text-sm font-semibold">
+                                    <p><span class="text-blue-600">No active sick leave</span></p>
+                                </div>
+                            {% endif %}
+
+
+                        </div>
+                    </div>
+                    <h1 class="text-gray-800 text-lg mt-10">Short Note:</h1>
+                    <div class="flex items-center mx-4 rounded-md my-4">
+                        <textarea
+                            class="border border-gray-200 focus:outline-gray-200 p-2 w-[100%] h-auto text-gray-600"
+                            readonly>{{curr_request.note}}</textarea>
+                    </div>
+                    <div class="flex justify-center items-center mt-10">
+                        <form method="POST" action="{% url 'accept_request' %}">
+                            {% csrf_token %}
+                            <button id="myBtn"
+                                class="p-2 px-6 mx-4 rounded-3xl bg-blue-500 text-white hover:bg-blue-700">Accept</button>
+                            <input type="hidden" name="request_id" value={{curr_request.id}}>
+                        </form>
+
+                        <form method="POST" action="{% url 'decline_request' %}">
+                            {% csrf_token %}
+                            <button
+                                class="p-2 px-6 mx-4 rounded-3xl bg-red-500 text-white hover:bg-red-700">Decline</button>
+                            <input type="hidden" name="request_id" value={{curr_request.id}}>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+{% endblock content %}

@@ -1,0 +1,95 @@
+.select-menu{
+    /* width: 25%; */
+    display: block
+  }
+  .select-menu .select-btn{
+    display: flex;
+    height: 55px;
+    padding: 15px;
+    font-size: 18px;
+    font-weight: 400;
+    border-radius: 8px;
+    align-items: center;
+    cursor: pointer;
+    justify-content: space-between;
+    box-shadow: 0 0 5px rgba(0,0,0,0.1);
+  }
+  .select-btn i{
+    font-size: 25px;
+    transition: 0.3s;
+  }
+  .select-menu.active .select-btn i{
+    transform: rotate(-180deg);
+  }
+  .select-menu .options{
+    position: absolute;
+    padding: 15px;
+    max-height: 80%;
+    overflow-y: scroll;
+    margin-top: 10px;
+    border-radius: 8px;
+    background: #fff;
+    box-shadow: 0 0 3px rgba(0,0,0,0.1);
+    display: none;
+    z-index: 100;
+  }
+  .select-menu.active .options{
+    display: block;
+  }
+  .options .option{
+    display: flex;
+    height: 55px;
+    cursor: pointer;
+    padding: 0 16px;
+    border-radius: 8px;
+    align-items: center;
+    background: #fff;
+  }
+  .options .option:hover{
+    background: #7fddd21e;
+  }
+  .option i{
+    font-size: 18px;
+    margin-right: 12px;
+  }
+  .option .option-text{
+    font-size: 18px;
+    color: #333;
+  }
+  
+  /* The Modal (background) */
+.modal {
+  display: none; /* Hidden by default */
+  position: fixed; /* Stay in place */
+  z-index: 1; /* Sit on top */
+  left: 0;
+  top: 0;
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  overflow: auto; /* Enable scroll if needed */
+  background-color: rgb(0,0,0); /* Fallback color */
+  background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+}
+
+/* Modal Content/Box */
+.modal-content {
+  background-color: #fefefe;
+  margin: 8% auto; /* 15% from the top and centered */
+  padding: 20px;
+  width: 60%; /* Could be more or less, depending on screen size */
+}
+
+/* The Close Button */
+.close {
+  color: #aaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+  color: black;
+  text-decoration: none;
+  cursor: pointer;
+}

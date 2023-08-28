@@ -1,0 +1,109 @@
+{% extends 'auth_base.html' %}
+{% load static %}
+{% block title %}Logout{% endblock title %}
+
+{% block style %}
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+
+    }
+
+    .backie::before {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        background-image: linear-gradient(to bottom right, #2541B2, #3b58c8, #06BEE1);
+        height: 110vh;
+        z-index: -1;
+    }
+</style>
+{% endblock style %}
+
+{% block content %}
+<div class="backie mx-auto" style="background-image:url('{% static 'images/Group.png' %}'); background-position: center; background-size: cover; height: 100%;">
+    <section class="">
+        <div class="flex ml-[13%] m-[2%] mt-[3%]">
+            <a href="{% url 'login' %}"
+                class="py-1 cursor-pointer px-8 mx-4 hover:bg-white hover:text-gray-800 hover:border transition-all duration-100 hover:border-white rounded-[10px] text-white">Login</a>
+
+            <a href="{% url 'register' %}"
+                class="py-1 cursor-pointer px-8 text-white border border-white rounded-[10px] hover:bg-white hover:text-gray-900 transition-all duration-100">Sign
+                Up</a>
+        </div>
+        <div class="flex bg-white mx-auto w-[75%] mt-[10%] sm:mt-[5%]">
+            <div class="w-full sm:w-[60%] order-2">
+                <div class="flex justify-center ">
+                    <div class="my-[3%]">
+                        <p class="m-5 text-3xl font-bold">Create Account</p>
+                        <div class="flex">
+                            <div class="mx-auto">
+                                <a
+                                    class="rounded-[50%] cursor-pointer transition-all hover:bg-black mx-4 pt-5 py-2 px-1 font-bold shadow-md"><i
+                                        class='bx bxl-facebook hover:text-white mx-1 text-2xl py-5'></i>
+                                </a>
+                                <a
+                                    class="rounded-[50%] cursor-pointer transition-all hover:bg-black mx-4 pt-5 py-2 px-1 font-bold shadow-md"><i
+                                        class='bx bxl-google-plus hover:text-white mx-1 text-2xl py-5'></i>
+                                </a>
+                                <a
+                                    class="rounded-[50%] cursor-pointer transition-all hover:bg-black mx-4 pt-5 py-2 px-2 font-bold shadow-md"><i
+                                        class='bx bxl-linkedin mx-1 hover:text-white text-2xl py-5'></i>
+                                </a>
+                            </div>
+
+                        </div>
+                        <form method="POST">
+                            {% csrf_token %}
+                            <div class="flex flex-col w-[100%] my-5">
+                                {% if messages %}
+                                    {% for message in messages  %}
+                                        <p class="text-red-500 text-center">{{message}}</p>
+                                    {% endfor %}
+                                {% endif %}
+                                <div class="relative">
+                                    <i class='absolute top-[25%] mx-1 text-2xl text-gray-400 bx bx-mail-send mt-1'></i>
+                                    {{form.email}}
+                                </div>
+                                <div class="relative">
+                                    <i class='absolute top-[25%] mx-1 text-2xl text-gray-400 bx bx-user'></i>
+                                    {{form.username}}
+                                </div>
+                                <div class="relative">
+                                    <i class='absolute top-[25%] mx-1 text-2xl text-gray-400 bx bx-lock-alt'></i>
+                                    {{form.password1}}
+                                </div>
+                                <div class="relative">
+                                    <i class='absolute top-[25%] mx-1 text-2xl text-gray-400 bx bx-lock-alt'></i>
+                                    {{form.password2}}
+                                </div>
+                                <button
+                                    class="p-2 my-2 px-5 text-white rounded-md bg-gradient-to-br from-[#2541B2] via-[#2541B2] to-[#0689e1] hover:shadow-lg">Register</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div style="background-image: url('{% static 'images/img1.png' %}'); background-position: 0px 100%; background-size: cover;"
+                class="hidden sm:block w-[40%] order-1 text-white bg-[#2541B2] ">
+                <div class="m-5"><img src="{% static 'images/logo-white.png' %}" class="w-auto h-10"></div>
+                <div class="flex justify-center">
+                    <div class="w-[80%] mt-[20%] text-center">
+                        <h1 class="text-3xl text-center font-semibold mb-2">Welcome Back!</h1>
+                        <p class="mx-auto w-[80%]">To resume login with your personal details</p>
+                        <a href="{% url 'login' %}"><button
+                                class="mt-[15%] py-1 cursor-pointer px-8 text-white border border-white rounded-[10px] hover:bg-white hover:text-gray-900 transition-all duration-100">Sign
+                                In</button></a>
+                    </div>
+                </div>
+
+
+            </div>
+        </div>
+    </section>
+</div>
+{% endblock content %}

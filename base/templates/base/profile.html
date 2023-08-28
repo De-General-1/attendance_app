@@ -1,0 +1,78 @@
+{% extends 'main.html' %}
+{% load static %}
+
+{% block title %}myProfile{% endblock title %}
+
+{% block css_files %}
+    <link rel="stylesheet" href="{% static 'css/profile.css' %}">
+{% endblock css_files %}
+
+{% block scripts %}
+    <script src="{% static 'js/profile.js' %}"></script>
+{% endblock scripts %}
+
+{% block content %}
+<div class="ml-auto w-[85%]">
+    <div style="background-image: url('{% static 'images/profile-bg.png' %}'); background-position: center; background-size: cover; height: 25%;" class="">
+    </div>
+    <div class="flex h-[12%] px-[1%] md:px-[8%] border-b-4 border-white shadow-lg">
+        <div class="relative rounded-[50%] -top-[60%] w-[160px] h-[160px]">
+            <!-- <span class="absolute -bottom-[150%] right-[25%] cursor-pointer"><i class='bx bx-refresh text-2xl text-white rounded-[100%] px-1 bg-[#181d66]'></i></span> -->
+            <img src="{{request.user.profile.profile_pic.url}}" class="rounded-[50%] w-[160px] h-[160px]  border-8 border-white object-cover">
+        </div>
+        <div class="mx-1">
+            <p class="text-xl sm:text-2xl md:text-3xl">{{request.user.username}}</p>
+            <p class="text-base sm:text-lg md:text-xl">{{request.user.email}}</p>
+        </div>
+        <div class="ml-auto mt-[4%]"><a href="{% url 'edit_profile' %}" class="flex items-center cursor-pointer"><i class='bx bx-edit-alt text-gray-500 text-2xl md:text-xl mx-1'></i> <h1 class="hidden sm:block">Edit profile</h1></a></div>
+    </div>
+
+    <!--Select BOX-->
+    <div class="sm:flex">
+        <!-- <div class="m-10 my-14 select-menu">
+            <div class="select-btn bg-[#7fddd21e]">
+                <span class="sBtn-text">Select Role</span>
+                <i class="bx bx-chevron-down"></i>
+            </div>
+    
+            <ul class="options">
+                <li class="option">
+                    <span class="option-text">Employee</span>
+                </li>
+                <li class="option">
+                    <span class="option-text">Admin</span>
+                </li>
+                </li>
+            </ul>
+        </div> -->
+        <div class="my-14 m-10 text-left w-auto sm:w-[40%] p-1 rounded-md bg-[#7fddd21e]">
+            <h6 class="px-1 text-xs text-gray-500">Role</h6>
+            <h1 class="px-1 font-semibold">Employee</h1>
+        </div>
+        <div class="my-14 m-10 text-left w-auto sm:w-[40%] p-1 rounded-md bg-[#7fddd21e]">
+            <h6 class="px-1 text-xs text-gray-500">Position</h6>
+            <h1 class="px-1 font-semibold">{{request.user.profile.position}}</h1>
+        </div>
+    </div>
+
+    <div class="mx-10">
+        <h1>Employee Details</h1>
+        <div class="my-7 text-left w-[auto] md:w-[50%] p-1 py-3 rounded-md bg-[#7fddd21e]">
+            <h6 class="px-1 text-xs text-gray-500">First name</h6>
+            <h1 class="px-1 font-semibold">{{request.user.profile.first_name}}</h1>
+        </div>
+        <div class="my-7 text-left w-[auto] md:w-[50%] p-1 py-3 rounded-md bg-[#7fddd21e]">
+            <h6 class="px-1 text-xs text-gray-500">Last name</h6>
+            <h1 class="px-1 font-semibold">{{request.user.profile.last_name}}</h1>
+        </div>
+        <div class="my-7 text-left w-[auto] md:w-[50%] p-1 py-3 rounded-md bg-[#7fddd21e]">
+            <h6 class="px-1 text-xs text-gray-500">Email address</h6>
+            <h1 class="px-1 font-semibold">{{request.user.email}}</h1>
+        </div>
+        <div class="my-7 text-left w-auto md:w-[50%] p-1 py-3 rounded-md bg-[#7fddd21e]">
+            <h6 class="px-1 text-xs text-gray-500">Phone Number</h6>
+            <h1 class="px-1 font-semibold">{{request.user.profile.phone}}</h1>
+        </div>
+    </div>
+</div>
+{% endblock content %}

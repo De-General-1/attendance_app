@@ -1,0 +1,80 @@
+{% extends 'main.html' %}
+{% load static %}
+
+{% block title %}Request Timeoff{% endblock title %}
+
+{% block css_files %}
+    <link rel="stylesheet" href="{% static 'css/profile.css' %}">
+{% endblock css_files %}
+
+{% block scripts %}
+    <script src="{% static 'js/profile.js' %}"></script>
+{% endblock scripts %}
+
+{% block style %}
+    <style>
+        .attendance-box ul li:nth-child(even) {
+            border: 1px solid rgb(214, 214, 214);
+        }
+    </style>
+{% endblock style %}
+
+{% block content %}
+<div class="ml-auto w-[85%] p-5">
+    {% include 'nav.html' %}
+
+    <div class="flex mt-[2%] mx-[2%] lg:mx-[5%]">
+        <h1 class="flex items-center text-xl font-semibold ml-[10%] sm:ml-0">Request Leave<i
+                class='bx bxs-label mx-2 text-2xl mt-1 text-blue-600'></i></h1>
+    </div>
+
+    <div class="mt-[2%] mx-[2%] lg:mx-[5%] ml-[12%] sm:ml-0">
+        <h1 class="text-gray-800 flex items-center">Request for leave from your manager, just specify the leave
+            type, date and write an optional note.</h1>
+        {% if messages %}
+            {% for message in messages %}
+                {% if 'error' in message.tags %}
+                    <p class="text-red-500 mt-[2%]">{{message}}</p>
+                {% endif %}
+            {% endfor %}
+        {% endif %}
+
+        <form method="POST">
+            {% csrf_token %}
+            <h1 class="text-xl font-semibold my-5">Leave Type:</h1>
+            <div class="my-5 select-menu w-[80%] sm:w-[60%] md:w-[30%]">
+                <div class="select-btn bg-[#7fddd21e]">
+                    <input id="hiddenInput" type="hidden" value="" name="leave_type">
+                    <span class="sBtn-text">Leave Type</span>
+                    <i class="bx bx-chevron-down"></i>
+                </div>
+
+                <ul class="options w-[60%] md:w-[20%]">
+                    <li class="option">
+                        <span class="option-text">Vacation</span>
+                    </li>
+                    <li class="option">
+                        <span class="option-text">Sick leave</span>
+                    </li>
+                </ul>
+            </div>
+
+            <h1 class="text-xl font-semibold my-5">Date:</h1>
+            <div class="flex items-center space-x-3 mx-4">
+                <input required type="date" class="flex items-center border border-gray-300 rounded-md p-2" name="start_date">
+                <h1>to</h1>
+                <input required type="date" class="flex items-center border border-gray-300 rounded-md p-2" name="stop_date">
+            </div>
+
+            <h1 class="text-gray-800 text-lg mt-10">Short Note(optional):</h1>
+            <div class="flex items-center mx-4 rounded-md my-4">
+                <textarea placeholder="Reason for leave..."
+                    class="border border-gray-200 focus:outline-gray-200 p-2 w-[80%] sm:w-[50%] h-auto" name="note"></textarea>
+            </div>
+            <div class="mx-4 my-7">
+                <button id="myBtn" type="submit" class="p-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md  w-[80%] sm:w-[50%]">Request leave</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock content %}

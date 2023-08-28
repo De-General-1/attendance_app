@@ -1,0 +1,151 @@
+{% extends 'main.html' %}
+{% load static %}
+
+{% block title %}Staff Details{% endblock title %}
+
+{% block styles %}
+    <style>
+        .attendance-box ul li:nth-child(even) {
+            border: 1px solid rgb(214, 214, 214);
+        }
+    </style>
+{% endblock styles %}
+
+{% block scripts %}
+    <script src="{% static 'js/profile.js' %}"></script>
+{% endblock scripts %}
+
+{% block content %}
+<div class="ml-auto w-[85%] p-5">
+    {% include 'nav.html' %}
+    
+    <div class="my-2 mx-1 md:mx-5 border border-gray-300 rounded-md p-5">
+        <form method="GET" action="{% url 'employee_details' employee.id %}">
+            {% csrf_token %}
+            <div class="sm:flex justify-between">
+                <h1 class="flex items-center text-base md:text-xl font-semibold"><div class="h-4 w-2 mx-1 bg-blue-700 rounded-xl"></div>Employee details</h1>
+                <div class="flex items-center my-4">
+                    <div class="">
+                        <select name="category" class="outline-none border mx-3 my-4 sm:my-0 border-gray-500 w-[auto] px-1 py-1 rounded flex items-center">
+                            <option {% if category == "This year" %}selected{% endif %}>This year</option>
+                            <option {% if category == "Last year" %}selected{% endif %}>Last year</option>
+                            <option {% if category == "Years before" %}selected{% endif %}>Years before</option>
+                        </select>
+                    </div>
+                    <button type="submit"><i class="bx bx-search text-xl text-gray-100 mx-2 p-1 px-5 border border-gray-100 rounded-md bg-gradient-to-br from-[#2541B2] via-[#2541B2] to-[#0689e1] cursor-pointer hover:shadow-lg"></i></button>
+                </div>
+            </div>
+        </form>
+
+        <div class="md:flex">
+            <div class="w-[30%] flex">
+                <img src="{{employee.profile.profile_pic.url}}" class="w-16 h-16 md:w-24 md:h-24 rounded-[100%]">
+                <div class="mx-4 flex flex-col">
+                    <p>{{employee.username}}</p>
+                    <div class="mt-auto">
+                        <p class="text-sm text-gray-400">Role</p>
+                        <p class="text-sm">{% if employee.profile.position %}{{employee.profile.position}}{% else %}None{% endif %}</p>
+                    </div>
+                </div>
+            </div>
+            <div class="mt-5 md:mt-auto text-sm text-gray-700 mx-5">
+                <h1 class="text-gray-400">Phone number</h1>
+                <h1>{{employee.profile.phone}}</h1>
+            </div>
+            <div class="mt-5 md:mt-auto text-sm text-gray-700 mx-5 md:mx-10">
+                <h1 class="text-gray-400">Email address</h1>
+                <h1>{{employee.email}}</h1>
+            </div>
+        </div>
+
+        <div class="sm:grid grid-cols-4 gap-5 my-7">
+            <div class="lg:flex items-center my-5 lg:text-left text-center bg-[#F3F3F3] border border-gray-100 shadow-sm rounded-md p-2">
+                <span class="mx-2"><i class='bx bx-log-in text-3xl rounded-[50%] text-blue-600 bg-gray-200 p-2 pr-3'></i></span>
+                <div>
+                    <h1 class="text-blue-600 text-lg font-semibold">{{total_attendance}}</h1>
+                    <h1 class="text-gray-600">Total Attendance</h1>
+                </div>
+                
+            </div>
+            <div class="lg:flex items-center my-5 lg:text-left text-center bg-[#F3F3F3] border border-gray-100 shadow-sm rounded-md p-2">
+                <div class="mx-2 ml-[40%] md:ml-[45%] lg:ml-0"><img class="bg-gray-200 p-3 rounded-[50%]" src="{% static 'images/Group 182.png' %}"></div>
+                <div>
+                    <h1 class="text-blue-600 text-lg font-semibold">{{avg_check_in_time}}</h1>
+                    <h1 class="text-gray-600">Avg Clock in</h1>
+                </div>
+                
+            </div>
+            <div class="lg:flex items-center my-5 lg:text-left text-center bg-[#F3F3F3] border border-gray-100 shadow-sm rounded-md p-2">
+                <div class="mx-2 ml-[40%] md:ml-[45%] lg:ml-0  "><img class="p-3 bg-gray-200 rounded-[50%]" src="{% static 'images/Group 183.png' %}"></div>
+                <div>
+                    <h1 class="text-blue-600 text-lg font-semibold">{{avg_check_out_time}}</h1>
+                    <h1 class="text-gray-600">Avg CLock out</h1>
+                </div>
+                
+            </div>
+            <div class="lg:flex items-center my-5 lg:text-left text-center bg-[#F3F3F3] border border-gray-100 shadow-sm rounded-md p-2">
+                <div class="mx-2 ml-[40%] md:ml-[45%] lg:ml-0  "><img class="p-3 bg-gray-200 rounded-[50%]" src="{% static 'images/Group 184.png' %}"></div>
+                <div>
+                    <h1 class="text-blue-600 text-lg font-semibold"> {% if punctual %}Punctual {% else %}Late{% endif %}</h1>
+                    <h1 class="text-gray-600">Sentiment</h1>
+                </div>
+                
+            </div>
+        </div>
+        
+    </div>
+
+    <div class="my-8 mx-1 md:mx-5 border border-gray-300 rounded-md p-5">
+        <div class="flex justify-between">
+            <h1 class="flex items-center text-xl font-semibold"><div class="h-4 w-2 mx-1 bg-blue-700 rounded-xl"></div>Attendace History</h1>
+        </div>
+
+        <div class="">
+            <div class="md:grid grid-cols-3 gap-10 my-7 text-sm md:text-base">
+                {% for attendance in attendances %}
+                    <div class="bg-[#F3F3F3] my-2 border border-gray-200 shadow-md rounded-md p-2">
+                        <div class="flex justify-between items-center">
+                            <h1 class="flex items-center"><i class='bx bx-time-five mx-1 text-xl' ></i>{{attendance.0.workday}}</h1>
+                            {% if attendance.1 %}
+                                {% if attendance.1.on_time %}
+                                    <p class="p-2 rounded-md bg-green-100 text-green-600 font-semibold">On Time</p>
+                                {% else %}
+                                    <p class="p-2 rounded-xl bg-orange-100 text-orange-600 font-semibold">Late</p>
+                                {% endif %}
+                            {% else %}
+                                <p class="p-2 rounded-xl bg-orange-100 text-orange-600 font-semibold">N/A</p>
+                            {% endif %}
+                        </div>
+                        
+                        {% if attendance.1 %}
+                            <div class="flex justify-between p-2">
+                                <div>
+                                    <p class="text-gray-500">clock In Time</p>
+                                    <h1 class="font-semibold">{{attendance.1.check_in}}</h1>
+                                </div>
+                                <div>
+                                    <p class="text-gray-500">clock Out Time</p>
+                                    <h1 class="font-semibold">{{attendance.1.check_out}}</h1>
+                                </div>
+                            </div>
+                        {% else %}
+                            <div class="flex justify-between p-2">
+                                <div>
+                                    <p class="text-gray-500">clock In Time</p>
+                                    <h1 class="font-semibold">N/A</h1>
+                                </div>
+                                <div>
+                                    <p class="text-gray-500">clock Out Time</p>
+                                    <h1 class="font-semibold">N/A</h1>
+                                </div>
+                            </div>
+                        {% endif %}                           
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+        
+    </div>
+
+</div>
+{% endblock content %}

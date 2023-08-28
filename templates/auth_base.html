@@ -1,0 +1,18 @@
+{% load static %}
+{% url 'login' as login %}
+{% url 'register' as register %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Boxicons CSS -->
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <link rel="stylesheet" href="{% static 'css/output.css' %}">
+    <title>Skywatch | {% block title %}{% endblock title %}</title>
+    
+    {% block style %}{% endblock style %}
+</head>
+<body class="{% if request.path == login %}overflow-hidden{% endif %}">
+    {% block content %}{% endblock content %}
+</body>
+</html>

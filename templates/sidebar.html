@@ -1,0 +1,43 @@
+{% url 'home' as dashboard_path %}
+{% url 'profile' as profile_path %}
+{% url 'edit_profile' as edit_profile_path %}
+{% url 'timesheets' as timesheets_path %}
+{% url 'employees' as employees_path %}
+{% url 'requests' as requests_path %}
+{% url 'request_leave' as request_leave_path %}
+
+{% load static %}
+<div class="bg-[#03256C] fixed w-[15%] h-full">
+    <a><img src="{% static 'images/logo-white.png' %}" class="w-auto h-10 m-3"></a>
+    <div class="mt-[40%]">
+        <ul class="my-5 mx-1 space-y-4">
+            <li>
+                <a href="{% url 'home' %}" class="flex justify-center md:justify-start items-center py-1 px-2 cursor-pointer {% if request.path == dashboard_path %}bg-[#D9D9D926]{% else %}hover:bg-[#D9D9D926]{% endif %} text-gray-100"><i class='bx bx-pulse text-3xl md:text-2xl text-gray-200 mx-1'></i><h1 class="hidden md:block">Dashboard</h1></a>
+            </li>
+            {% if request.user.is_staff %}
+                <li>
+                    <a href="{% url 'employees' %}" class="flex justify-center md:justify-start items-center py-1 px-2 cursor-pointer {% if request.path == employees_path %}bg-[#D9D9D926]{% else %}hover:bg-[#D9D9D926]{% endif %} text-gray-100"><i class='bx bxs-user-account text-3xl md:text-2xl bg-transparent text-gray-200 mx-1'></i><h1 class="hidden md:block">Employees</h1></a>
+                </li>
+                
+                <li>
+                    <a href="{% url 'requests' %}" class="flex justify-center md:justify-start items-center py-2 px-2 cursor-pointer {% if request.path == requests_path %}bg-[#D9D9D926]{% else %}hover:bg-[#D9D9D926]{% endif %} text-gray-100 text-sm"><i class='bx bxs-notification-off text-3xl md:text-2xl bg-transparent text-gray-200 mx-1'></i><h1 class="hidden md:block">Time Off Requests</h1></a>
+                </li>
+            {% endif %}
+            
+            <li>
+                <a href="{% url 'timesheets' %}" class="flex justify-center md:justify-start items-center py-1 px-2 cursor-pointer {% if request.path == timesheets_path %}bg-[#D9D9D926]{% else %}hover:bg-[#D9D9D926]{% endif %} text-gray-200"><i class='bx bxs-file-blank text-3xl md:text-2xl bg-transparent text-gray-200 mx-1'></i><h1 class="hidden md:block">Timesheets</h1></a>
+            </li>
+            <li>
+                <a href="{% url 'request_leave' %}" class="flex justify-center md:justify-start items-center py-1 px-2 cursor-pointer {% if request.path == request_leave_path %}bg-[#D9D9D926]{% else %}hover:bg-[#D9D9D926]{% endif %} text-gray-200"><i class='bx bxs-label text-3xl md:text-2xl text-gray-200 mx-1'></i><h1 class="hidden md:block">Request Leave</h1></a>
+            </li>
+            <li>
+                <a href="{% url 'profile' %}" class="flex justify-center md:justify-start items-center py-1 px-2 cursor-pointer {% if request.path == profile_path %}bg-[#D9D9D926]{% elif request.path == edit_profile_path %}bg-[#D9D9D926]{% else %}hover:bg-[#D9D9D926]{% endif %} text-gray-200"><i class='bx bx-user text-3xl md:text-2xl text-gray-200 mx-1'></i><h1 class="hidden md:block">Profile</h1></a>
+            </li>
+                                    
+        </ul>
+    </div>
+
+    <div class="m-5 absolute w-[80%] mx-auto md:mx-5 bottom-0">
+        <li class="flex justify-center md:justify-start items-center cursor-pointer py-1 px-2 hover:bg-[#D9D9D926] text-gray-200"><i class='bx bx-log-out text-3xl md:text-2xl text-gray-200 mx-1'></i><h1 class="hidden md:block"><a href="{% url 'logout' %}">Logout</a></h1></li>
+    </div>
+</div>

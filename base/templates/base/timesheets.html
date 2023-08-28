@@ -1,0 +1,95 @@
+{% extends 'main.html' %}
+{% load static %}
+
+{% block title %}Timesheets{% endblock title %}
+
+{% block content %}
+<div class="ml-auto overflow-x-scroll w-[85%]">
+    <div class="overflow-x-scroll w-[70rem]">
+    <div class=" p-5">
+        <div class="w-[50%] flex">
+            <img src="{{request.user.profile.profile_pic.url}}" class="w-auto h-28">
+            <div class="mx-2 flex flex-col">
+                <p>{{request.user.username}}</p>
+                <p class="text-sm text-blue-400">{{request.user.profile.position}}</p>
+                <p class="text-sm mt-auto">Location: <span class="font-bold">{{request.user.profile.location}}</span></p>
+            </div>
+        </div>
+        <form method="GET" action="{% url 'timesheets' %}">
+            <div class="flex items-center w-[60%] sm:w-[75%] md:w-[45%] my-6 p-2 border border-gray-200 rounded-md">
+                <p class="flex items-center"><span class="flex"><span class="hidden md:block mr-1">Time</span>Period:</span><input type="date" class="border border-gray-100 p-2" name="start_date" value={{start_date}}>  to  <input type="date" class="border border-gray-100 p-2" name="stop_date" value={{stop_date}}></p>
+                <button type="submit"><i class="bx bx-search text-xl text-gray-100 mx-2 p-1 px-5 border border-gray-100 rounded-md bg-gradient-to-br from-[#2541B2] via-[#2541B2] to-[#0689e1] cursor-pointer hover:shadow-lg"></i></button>
+            </div>
+        </form>
+        <div class="flex justify-between sm:w-[95%] md:w-[80%] lg:w-[60%]">
+            <p class="flex items-center text-3xl font-semibold">{{total_work_hours}} Hrs <span class="text-sm text-gray-600 mx-2">Total hours:</span></p>
+            <div>
+                <div class="h-1 w-4 rounded bg-orange-500 "></div>
+                <p class="font-semibold">{{regular}} Hrs</p>
+                <p class="text-sm text-gray-500">Regular</p>
+            </div>
+            <div>
+                <div class="h-1 w-4 rounded bg-orange-500 "></div>
+                <p class="font-semibold">{{overtime}} Hrs</p>
+                <p class="text-sm text-gray-500">Overtime</p>
+            </div>
+            <div>
+                <div class="h-1 w-4 rounded bg-orange-500 "></div>
+                <p class="font-semibold">{{vacations_days}} days</p>
+                <p class="text-sm text-gray-500">Vacation</p>
+            </div>
+            <div>
+                <div class="h-1 w-4 rounded bg-orange-500 "></div>
+                <p class="font-semibold">{{sick_leave_days}} days</p>
+                <p class="text-sm text-gray-500">Sick leave</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="my-5">
+        <div class="grid grid-cols-7 p-2 px-5 border-t border-b border-gray-300 text-gray-500">
+            <div class="w-[12%]">Date</div>
+            <div>Check In</div>
+            <div>Check Out</div>
+            <div>Meal Break</div>
+            <div>Work Hours</div>
+            <div>Overtime</div>
+            <div>Note</div>
+        </div>
+        {% for attendance in user_attendances %}
+            {% if attendance.1 %}
+                <div class="grid grid-cols-7 p-2 px-5 border-b border-gray-300 text-gray-700 font-semibold">
+                    <div><span class="px-1 rounded-xl border border-gray-500">{{attendance.0.get_workday_weekday}}</span> {{attendance.0.workday}}</div>
+                    <div>{{attendance.1.get_formated_checkin_time}}</div>
+                    <div>{{attendance.1.get_formated_checkout_time}}</div>
+                    <div>
+                        <p>1:00 Hr</p>
+                        <span class="text-xs text-gray-400">12:00PM - 1:00PM</span>
+                    </div>
+                    <div>{{attendance.1.get_work_hours}} Hrs</div>
+                    <div>{{attendance.1.get_over_time}} Hrs</div>
+                    <div>
+                        <i class="bx bx-file text-2xl"></i>
+                    </div>
+                </div>
+            {% else %}
+                <div class="grid grid-cols-7 p-2 px-5 border-b border-gray-300 text-gray-700 font-semibold">
+                    <div><span class="px-1 rounded-xl border border-gray-500">{{attendance.0.get_workday_weekday}}</span> {{attendance.0.workday}}</div>
+                    <div>N/A</div>
+                    <div>N/A</div>
+                    <div>
+                        <p>N/A</p>
+                        <span class="text-xs text-gray-400">N/A</span>
+                    </div>
+                    <div>N/A</div>
+                    <div>N/A</div>
+                    <div>
+                        <i class="bx bx-file text-2xl"></i>
+                    </div>
+                </div>
+            {% endif %}
+        {% endfor %}
+    </div>
+    </div>
+</div>
+{% endblock content %}
